@@ -4,6 +4,7 @@ import * as N3 from "n3";
 import factory from "rdf-ext";
 import rdfDereferencer from "rdf-dereference";
 import rdfSerializer from "rdf-serialize";
+import rdfParser from "rdf-parse";
 
 const stringifyStream = require('stream-to-string');
 const streamifyArray = require('streamify-array');
@@ -105,9 +106,42 @@ const isRemote = (path: string) => {
 }
 
 
-const fetch = async(path: string, local: boolean) => {
+var _fetcher = async(path: string, local: boolean) => {
   if (isBrowser && local) throw new Error("Cannot retrieve local files from browser environment.")
   const { quads } = await rdfDereferencer.dereference(path, {localFiles: local})
   return quads
 }
 
+var _customfetcher: any;
+
+const fetch = async(path: string, local: boolean) => {
+  if (_customfetcher) { 
+    // Only for custom fetch functions in the browser
+    const response = await _customfetcher(path);
+    const content_type = response.headers.get('content-type')
+    try {
+      const inputStream = toReadableStream(response.body)
+      return rdfParser.parse(inputStream, { contentType: content_type })
+    } catch(e) {
+      throw new Error(`Error parsing resource at ${response.url}.`)
+    }
+  }
+  else return _fetcher(path, local);
+}
+
+
+export const setFetchFunction = async(f: Function) => {
+  _customfetcher = f
+}
+
+
+
+/**
+ * Converts a WhatWG streams to Node streams if required.
+ * Returns the input in case the stream already is a Node stream.
+ * @param {ReadableStream} body
+ * @returns {NodeJS.ReadableStream}
+ */
+export function toReadableStream(body: ReadableStream | null): NodeJS.ReadableStream {
+  return require('is-stream')(body) ? body : require('web-streams-node').toNodeReadable(body);
+}

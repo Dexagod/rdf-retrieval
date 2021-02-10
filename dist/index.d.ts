@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import * as RDF from 'rdf-js';
 import * as N3 from "n3";
-export declare const getResourceAsQuadStream: (path: string) => Promise<RDF.Stream>;
+export declare const getResourceAsQuadStream: (path: string) => Promise<RDF.Stream<RDF.Quad>>;
 export declare const getResourceAsQuadArray: (path: string) => Promise<RDF.Quad[]>;
 export declare const getResourceAsDataset: (path: string) => Promise<import("rdf-ext/lib/Dataset")>;
 export declare const getResourceAsStore: (path: string) => Promise<N3.Store<RDF.Quad, N3.Quad>>;
@@ -17,4 +17,12 @@ export declare const quadStreamtoTextStream: (input: RDF.Stream, format?: string
 export declare const quadArraytoTextStream: (input: RDF.Quad[], format?: string | undefined) => Promise<NodeJS.ReadableStream>;
 export declare const quadStreamtoString: (input: RDF.Stream, format?: string | undefined) => Promise<String>;
 export declare const quadArraytoString: (input: RDF.Quad[], format?: string | undefined) => Promise<String>;
+export declare const setFetchFunction: (f: Function) => Promise<void>;
+/**
+ * Converts a WhatWG streams to Node streams if required.
+ * Returns the input in case the stream already is a Node stream.
+ * @param {ReadableStream} body
+ * @returns {NodeJS.ReadableStream}
+ */
+export declare function toReadableStream(body: ReadableStream | null): NodeJS.ReadableStream;
 //# sourceMappingURL=index.d.ts.map

@@ -58,12 +58,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.quadArraytoString = exports.quadStreamtoString = exports.quadArraytoTextStream = exports.quadStreamtoTextStream = exports.quadArraytoDataset = exports.quadStreamtoDataset = exports.quadArraytoStore = exports.quadStreamtoStore = exports.quadArraytoQuadStream = exports.quadStreamtoQuadArray = exports.getResourceAsString = exports.getResourceAsTextStream = exports.getResourceAsStore = exports.getResourceAsDataset = exports.getResourceAsQuadArray = exports.getResourceAsQuadStream = void 0;
+exports.toReadableStream = exports.setFetchFunction = exports.quadArraytoString = exports.quadStreamtoString = exports.quadArraytoTextStream = exports.quadStreamtoTextStream = exports.quadArraytoDataset = exports.quadStreamtoDataset = exports.quadArraytoStore = exports.quadStreamtoStore = exports.quadArraytoQuadStream = exports.quadStreamtoQuadArray = exports.getResourceAsString = exports.getResourceAsTextStream = exports.getResourceAsStore = exports.getResourceAsDataset = exports.getResourceAsQuadArray = exports.getResourceAsQuadStream = void 0;
 var browser_or_node_1 = require("browser-or-node");
 var N3 = __importStar(require("n3"));
 var rdf_ext_1 = __importDefault(require("rdf-ext"));
 var rdf_dereference_1 = __importDefault(require("rdf-dereference"));
 var rdf_serialize_1 = __importDefault(require("rdf-serialize"));
+var rdf_parse_1 = __importDefault(require("rdf-parse"));
 var stringifyStream = require('stream-to-string');
 var streamifyArray = require('streamify-array');
 // Data retrieval functions
@@ -117,7 +118,8 @@ exports.getResourceAsTextStream = function (path, format) { return __awaiter(voi
             case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
             case 1:
                 quadStream = _a.sent();
-                return [2 /*return*/, exports.quadStreamtoTextStream(quadStream, format)];
+                return [4 /*yield*/, exports.quadStreamtoTextStream(quadStream, format)];
+            case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
@@ -128,7 +130,8 @@ exports.getResourceAsString = function (path, format) { return __awaiter(void 0,
             case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
             case 1:
                 quadStream = _a.sent();
-                return [2 /*return*/, exports.quadStreamtoString(quadStream, format)];
+                return [4 /*yield*/, exports.quadStreamtoString(quadStream, format)];
+            case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
@@ -211,10 +214,11 @@ exports.quadStreamtoString = function (input, format) { return __awaiter(void 0,
     var textStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                textStream = exports.quadStreamtoTextStream(input, format);
+            case 0: return [4 /*yield*/, exports.quadStreamtoTextStream(input, format)];
+            case 1:
+                textStream = _a.sent();
                 return [4 /*yield*/, stringifyStream(textStream)];
-            case 1: return [2 /*return*/, _a.sent()];
+            case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
@@ -222,10 +226,11 @@ exports.quadArraytoString = function (input, format) { return __awaiter(void 0, 
     var textStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                textStream = exports.quadArraytoTextStream(input, format);
+            case 0: return [4 /*yield*/, exports.quadArraytoTextStream(input, format)];
+            case 1:
+                textStream = _a.sent();
                 return [4 /*yield*/, stringifyStream(textStream)];
-            case 1: return [2 /*return*/, _a.sent()];
+            case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
@@ -239,7 +244,7 @@ var isRemote = function (path) {
     }
     return remoteURL;
 };
-var fetch = function (path, local) { return __awaiter(void 0, void 0, void 0, function () {
+var _fetcher = function (path, local) { return __awaiter(void 0, void 0, void 0, function () {
     var quads;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -253,4 +258,44 @@ var fetch = function (path, local) { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
+var _customfetcher;
+var fetch = function (path, local) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, content_type, inputStream;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!_customfetcher) return [3 /*break*/, 2];
+                return [4 /*yield*/, _customfetcher(path)];
+            case 1:
+                response = _a.sent();
+                content_type = response.headers.get('content-type');
+                try {
+                    inputStream = toReadableStream(response.body);
+                    return [2 /*return*/, rdf_parse_1.default.parse(inputStream, { contentType: content_type })];
+                }
+                catch (e) {
+                    throw new Error("Error parsing resource at " + response.url + ".");
+                }
+                return [3 /*break*/, 3];
+            case 2: return [2 /*return*/, _fetcher(path, local)];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.setFetchFunction = function (f) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        _customfetcher = f;
+        return [2 /*return*/];
+    });
+}); };
+/**
+ * Converts a WhatWG streams to Node streams if required.
+ * Returns the input in case the stream already is a Node stream.
+ * @param {ReadableStream} body
+ * @returns {NodeJS.ReadableStream}
+ */
+function toReadableStream(body) {
+    return require('is-stream')(body) ? body : require('web-streams-node').toNodeReadable(body);
+}
+exports.toReadableStream = toReadableStream;
 //# sourceMappingURL=index.js.map
