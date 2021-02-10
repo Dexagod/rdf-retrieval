@@ -30,12 +30,12 @@ export const getResourceAsStore = async (path: string) => {
 
 export const getResourceAsTextStream = async (path: string, format?: string) => {
   const quadStream = await getResourceAsQuadStream(path)
-  return quadStreamtoTextStream(quadStream, format);
+  return await quadStreamtoTextStream(quadStream, format);
 }
 
 export const getResourceAsString = async (path: string, format?: string) => {
   const quadStream = await getResourceAsQuadStream(path)
-  return quadStreamtoString(quadStream, format); 
+  return await quadStreamtoString(quadStream, format); 
 }
 
 // Data conversion functions
@@ -86,12 +86,12 @@ export const quadArraytoTextStream = async (input: RDF.Quad[], format?: string) 
 
 
 export const quadStreamtoString = async (input: RDF.Stream, format?: string) => {
-  const textStream = quadStreamtoTextStream(input, format)
+  const textStream = await quadStreamtoTextStream(input, format)
   return await stringifyStream(textStream) as String
 }
 
 export const quadArraytoString = async (input: RDF.Quad[], format?: string) => {
-  const textStream = quadArraytoTextStream(input, format)
+  const textStream = await quadArraytoTextStream(input, format)
   return await stringifyStream(textStream) as String
 }
 
