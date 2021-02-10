@@ -73,24 +73,24 @@ export const quadArraytoDataset = async (input: RDF.Quad[]) => {
 }
 
 
-export const quadStreamtoTextStream = async (input: RDF.Stream, format: string) => {
+export const quadStreamtoTextStream = async (input: RDF.Stream, format?: string) => {
   format = format || "text/turtle"
   return rdfSerializer.serialize(input, {contentType: format})
 }
 
-export const quadArraytoTextStream = async (input: RDF.Quad[], format: string) => {
+export const quadArraytoTextStream = async (input: RDF.Quad[], format?: string) => {
   format = format || "text/turtle"
   const quadStream = await quadArraytoQuadStream(input);
   return rdfSerializer.serialize(quadStream, {contentType: format})
 }
 
 
-export const quadStreamtoString = async (input: RDF.Stream, format: string) => {
+export const quadStreamtoString = async (input: RDF.Stream, format?: string) => {
   const textStream = quadStreamtoTextStream(input, format)
   return await stringifyStream(textStream) as String
 }
 
-export const quadArraytoString = async (input: RDF.Quad[], format: string) => {
+export const quadArraytoString = async (input: RDF.Quad[], format?: string) => {
   const textStream = quadArraytoTextStream(input, format)
   return await stringifyStream(textStream) as String
 }
