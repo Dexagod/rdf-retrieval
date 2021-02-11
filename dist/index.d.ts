@@ -7,16 +7,16 @@ export declare const getResourceAsDataset: (path: string) => Promise<import("rdf
 export declare const getResourceAsStore: (path: string) => Promise<N3.Store<RDF.Quad, N3.Quad>>;
 export declare const getResourceAsTextStream: (path: string, format?: string | undefined) => Promise<NodeJS.ReadableStream>;
 export declare const getResourceAsString: (path: string, format?: string | undefined) => Promise<String>;
-export declare const quadStreamtoQuadArray: (input: RDF.Stream) => Promise<RDF.Quad[]>;
-export declare const quadArraytoQuadStream: (input: RDF.Quad[]) => Promise<any>;
-export declare const quadStreamtoStore: (input: RDF.Stream) => Promise<N3.Store<RDF.Quad, N3.Quad>>;
-export declare const quadArraytoStore: (input: RDF.Quad[]) => Promise<N3.Store<RDF.Quad, N3.Quad>>;
-export declare const quadStreamtoDataset: (input: RDF.Stream) => Promise<import("rdf-ext/lib/Dataset")>;
-export declare const quadArraytoDataset: (input: RDF.Quad[]) => Promise<import("rdf-ext/lib/Dataset")>;
-export declare const quadStreamtoTextStream: (input: RDF.Stream, format?: string | undefined) => Promise<NodeJS.ReadableStream>;
-export declare const quadArraytoTextStream: (input: RDF.Quad[], format?: string | undefined) => Promise<NodeJS.ReadableStream>;
-export declare const quadStreamtoString: (input: RDF.Stream, format?: string | undefined) => Promise<String>;
-export declare const quadArraytoString: (input: RDF.Quad[], format?: string | undefined) => Promise<String>;
+export declare const quadStreamToQuadArray: (input: RDF.Stream) => Promise<RDF.Quad[]>;
+export declare const quadArrayToQuadStream: (input: RDF.Quad[]) => Promise<any>;
+export declare const quadStreamToStore: (input: RDF.Stream) => Promise<N3.Store<RDF.Quad, N3.Quad>>;
+export declare const quadArrayToStore: (input: RDF.Quad[]) => Promise<N3.Store<RDF.Quad, N3.Quad>>;
+export declare const quadStreamToDataset: (input: RDF.Stream) => Promise<import("rdf-ext/lib/Dataset")>;
+export declare const quadArrayToDataset: (input: RDF.Quad[]) => Promise<import("rdf-ext/lib/Dataset")>;
+export declare const quadStreamToTextStream: (input: RDF.Stream, format?: string | undefined) => Promise<NodeJS.ReadableStream>;
+export declare const quadArrayToTextStream: (input: RDF.Quad[], format?: string | undefined) => Promise<NodeJS.ReadableStream>;
+export declare const quadStreamToString: (input: RDF.Stream, format?: string | undefined) => Promise<String>;
+export declare const quadArrayToString: (input: RDF.Quad[], format?: string | undefined) => Promise<String>;
 export declare const setFetchFunction: (f: Function) => Promise<void>;
 /**
  * Converts a WhatWG streams to Node streams if required.

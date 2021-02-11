@@ -16,12 +16,12 @@ export const getResourceAsQuadStream = async (path: string) => {
 
 export const getResourceAsQuadArray = async (path: string) => {
   const stream = await fetch(path, isRemote(path))
-  return await quadStreamtoQuadArray(stream)
+  return await quadStreamToQuadArray(stream)
 }
 
 export const getResourceAsDataset = async (path: string) => {
   const quadStream = await getResourceAsQuadStream(path)
-  return await quadStreamtoDataset(quadStream)
+  return await quadStreamToDataset(quadStream)
 }
 
 export const getResourceAsStore = async (path: string) => {
@@ -31,17 +31,17 @@ export const getResourceAsStore = async (path: string) => {
 
 export const getResourceAsTextStream = async (path: string, format?: string) => {
   const quadStream = await getResourceAsQuadStream(path)
-  return await quadStreamtoTextStream(quadStream, format);
+  return await quadStreamToTextStream(quadStream, format);
 }
 
 export const getResourceAsString = async (path: string, format?: string) => {
   const quadStream = await getResourceAsQuadStream(path)
-  return await quadStreamtoString(quadStream, format); 
+  return await quadStreamToString(quadStream, format); 
 }
 
 // Data conversion functions
 
-export const quadStreamtoQuadArray = async (input: RDF.Stream) : Promise<RDF.Quad[]> => {
+export const quadStreamToQuadArray = async (input: RDF.Stream) : Promise<RDF.Quad[]> => {
   return new Promise((resolve, reject) => { 
     const quads : RDF.Quad[] = []
     input
@@ -51,48 +51,48 @@ export const quadStreamtoQuadArray = async (input: RDF.Stream) : Promise<RDF.Qua
   })
 }
 
-export const quadArraytoQuadStream = async (input: RDF.Quad[]) => {
+export const quadArrayToQuadStream = async (input: RDF.Quad[]) => {
   return await streamifyArray(input);
 }
 
-export const quadStreamtoStore = async (input: RDF.Stream) => {
-  return new N3.Store(await quadStreamtoQuadArray(input))
+export const quadStreamToStore = async (input: RDF.Stream) => {
+  return new N3.Store(await quadStreamToQuadArray(input))
 }
 
-export const quadArraytoStore = async (input: RDF.Quad[]) => {
+export const quadArrayToStore = async (input: RDF.Quad[]) => {
   return new N3.Store(input)
 }
 
 
-export const quadStreamtoDataset = async (input: RDF.Stream) => {
+export const quadStreamToDataset = async (input: RDF.Stream) => {
   return await factory.dataset().import(input)
 }
 
-export const quadArraytoDataset = async (input: RDF.Quad[]) => {
-  const quadStream = await quadArraytoQuadStream(input);
+export const quadArrayToDataset = async (input: RDF.Quad[]) => {
+  const quadStream = await quadArrayToQuadStream(input);
   return await factory.dataset().import(quadStream)
 }
 
 
-export const quadStreamtoTextStream = async (input: RDF.Stream, format?: string) => {
+export const quadStreamToTextStream = async (input: RDF.Stream, format?: string) => {
   format = format || "text/turtle"
   return rdfSerializer.serialize(input, {contentType: format})
 }
 
-export const quadArraytoTextStream = async (input: RDF.Quad[], format?: string) => {
+export const quadArrayToTextStream = async (input: RDF.Quad[], format?: string) => {
   format = format || "text/turtle"
-  const quadStream = await quadArraytoQuadStream(input);
+  const quadStream = await quadArrayToQuadStream(input);
   return rdfSerializer.serialize(quadStream, {contentType: format})
 }
 
 
-export const quadStreamtoString = async (input: RDF.Stream, format?: string) => {
-  const textStream = await quadStreamtoTextStream(input, format)
+export const quadStreamToString = async (input: RDF.Stream, format?: string) => {
+  const textStream = await quadStreamToTextStream(input, format)
   return await stringifyStream(textStream) as String
 }
 
-export const quadArraytoString = async (input: RDF.Quad[], format?: string) => {
-  const textStream = await quadArraytoTextStream(input, format)
+export const quadArrayToString = async (input: RDF.Quad[], format?: string) => {
+  const textStream = await quadArrayToTextStream(input, format)
   return await stringifyStream(textStream) as String
 }
 

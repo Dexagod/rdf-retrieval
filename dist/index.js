@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toReadableStream = exports.setFetchFunction = exports.quadArraytoString = exports.quadStreamtoString = exports.quadArraytoTextStream = exports.quadStreamtoTextStream = exports.quadArraytoDataset = exports.quadStreamtoDataset = exports.quadArraytoStore = exports.quadStreamtoStore = exports.quadArraytoQuadStream = exports.quadStreamtoQuadArray = exports.getResourceAsString = exports.getResourceAsTextStream = exports.getResourceAsStore = exports.getResourceAsDataset = exports.getResourceAsQuadArray = exports.getResourceAsQuadStream = void 0;
+exports.toReadableStream = exports.setFetchFunction = exports.quadArrayToString = exports.quadStreamToString = exports.quadArrayToTextStream = exports.quadStreamToTextStream = exports.quadArrayToDataset = exports.quadStreamToDataset = exports.quadArrayToStore = exports.quadStreamToStore = exports.quadArrayToQuadStream = exports.quadStreamToQuadArray = exports.getResourceAsString = exports.getResourceAsTextStream = exports.getResourceAsStore = exports.getResourceAsDataset = exports.getResourceAsQuadArray = exports.getResourceAsQuadStream = void 0;
 var browser_or_node_1 = require("browser-or-node");
 var N3 = __importStar(require("n3"));
 var rdf_ext_1 = __importDefault(require("rdf-ext"));
@@ -83,7 +83,7 @@ exports.getResourceAsQuadArray = function (path) { return __awaiter(void 0, void
             case 0: return [4 /*yield*/, fetch(path, isRemote(path))];
             case 1:
                 stream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamtoQuadArray(stream)];
+                return [4 /*yield*/, exports.quadStreamToQuadArray(stream)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
@@ -95,7 +95,7 @@ exports.getResourceAsDataset = function (path) { return __awaiter(void 0, void 0
             case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
             case 1:
                 quadStream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamtoDataset(quadStream)];
+                return [4 /*yield*/, exports.quadStreamToDataset(quadStream)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
@@ -118,7 +118,7 @@ exports.getResourceAsTextStream = function (path, format) { return __awaiter(voi
             case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
             case 1:
                 quadStream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamtoTextStream(quadStream, format)];
+                return [4 /*yield*/, exports.quadStreamToTextStream(quadStream, format)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
@@ -130,13 +130,13 @@ exports.getResourceAsString = function (path, format) { return __awaiter(void 0,
             case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
             case 1:
                 quadStream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamtoString(quadStream, format)];
+                return [4 /*yield*/, exports.quadStreamToString(quadStream, format)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 // Data conversion functions
-exports.quadStreamtoQuadArray = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToQuadArray = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 var quads = [];
@@ -147,7 +147,7 @@ exports.quadStreamtoQuadArray = function (input) { return __awaiter(void 0, void
             })];
     });
 }); };
-exports.quadArraytoQuadStream = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToQuadStream = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, streamifyArray(input)];
@@ -155,23 +155,23 @@ exports.quadArraytoQuadStream = function (input) { return __awaiter(void 0, void
         }
     });
 }); };
-exports.quadStreamtoStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _b = (_a = N3.Store).bind;
-                return [4 /*yield*/, exports.quadStreamtoQuadArray(input)];
+                return [4 /*yield*/, exports.quadStreamToQuadArray(input)];
             case 1: return [2 /*return*/, new (_b.apply(_a, [void 0, _c.sent()]))()];
         }
     });
 }); };
-exports.quadArraytoStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new N3.Store(input)];
     });
 }); };
-exports.quadStreamtoDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, rdf_ext_1.default.dataset().import(input)];
@@ -179,11 +179,11 @@ exports.quadStreamtoDataset = function (input) { return __awaiter(void 0, void 0
         }
     });
 }); };
-exports.quadArraytoDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     var quadStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.quadArraytoQuadStream(input)];
+            case 0: return [4 /*yield*/, exports.quadArrayToQuadStream(input)];
             case 1:
                 quadStream = _a.sent();
                 return [4 /*yield*/, rdf_ext_1.default.dataset().import(quadStream)];
@@ -191,30 +191,30 @@ exports.quadArraytoDataset = function (input) { return __awaiter(void 0, void 0,
         }
     });
 }); };
-exports.quadStreamtoTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         format = format || "text/turtle";
         return [2 /*return*/, rdf_serialize_1.default.serialize(input, { contentType: format })];
     });
 }); };
-exports.quadArraytoTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     var quadStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 format = format || "text/turtle";
-                return [4 /*yield*/, exports.quadArraytoQuadStream(input)];
+                return [4 /*yield*/, exports.quadArrayToQuadStream(input)];
             case 1:
                 quadStream = _a.sent();
                 return [2 /*return*/, rdf_serialize_1.default.serialize(quadStream, { contentType: format })];
         }
     });
 }); };
-exports.quadStreamtoString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     var textStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.quadStreamtoTextStream(input, format)];
+            case 0: return [4 /*yield*/, exports.quadStreamToTextStream(input, format)];
             case 1:
                 textStream = _a.sent();
                 return [4 /*yield*/, stringifyStream(textStream)];
@@ -222,11 +222,11 @@ exports.quadStreamtoString = function (input, format) { return __awaiter(void 0,
         }
     });
 }); };
-exports.quadArraytoString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     var textStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.quadArraytoTextStream(input, format)];
+            case 0: return [4 /*yield*/, exports.quadArrayToTextStream(input, format)];
             case 1:
                 textStream = _a.sent();
                 return [4 /*yield*/, stringifyStream(textStream)];
