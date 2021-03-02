@@ -106,15 +106,15 @@ const isRemote = (path: string) => {
 }
 
 
-var _fetcher = async(path: string, local: boolean) => {
-  if (isBrowser && local) throw new Error("Cannot retrieve local files from browser environment.")
-  const { quads } = await rdfDereferencer.dereference(path, {localFiles: local})
+var _fetcher = async(path: string, remote: boolean) => {
+  if (isBrowser && !remote) throw new Error("Cannot retrieve local files from browser environment.")
+  const { quads } = await rdfDereferencer.dereference(path, {localFiles: !remote})
   return quads
 }
 
 var _customfetcher: any;
 
-const fetch = async(path: string, local: boolean) => {
+const fetch = async(path: string, remote: boolean) => {
   if (_customfetcher) { 
     // Only for custom fetch functions in the browser
     const response = await _customfetcher(path);
@@ -126,7 +126,7 @@ const fetch = async(path: string, local: boolean) => {
       throw new Error(`Error parsing resource at ${response.url}.`)
     }
   }
-  else return _fetcher(path, local);
+  else return _fetcher(path, remote);
 }
 
 

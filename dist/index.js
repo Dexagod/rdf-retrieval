@@ -244,14 +244,14 @@ var isRemote = function (path) {
     }
     return remoteURL;
 };
-var _fetcher = function (path, local) { return __awaiter(void 0, void 0, void 0, function () {
+var _fetcher = function (path, remote) { return __awaiter(void 0, void 0, void 0, function () {
     var quads;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (browser_or_node_1.isBrowser && local)
+                if (browser_or_node_1.isBrowser && !remote)
                     throw new Error("Cannot retrieve local files from browser environment.");
-                return [4 /*yield*/, rdf_dereference_1.default.dereference(path, { localFiles: local })];
+                return [4 /*yield*/, rdf_dereference_1.default.dereference(path, { localFiles: !remote })];
             case 1:
                 quads = (_a.sent()).quads;
                 return [2 /*return*/, quads];
@@ -259,7 +259,7 @@ var _fetcher = function (path, local) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 var _customfetcher;
-var fetch = function (path, local) { return __awaiter(void 0, void 0, void 0, function () {
+var fetch = function (path, remote) { return __awaiter(void 0, void 0, void 0, function () {
     var response, content_type, inputStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -277,7 +277,7 @@ var fetch = function (path, local) { return __awaiter(void 0, void 0, void 0, fu
                     throw new Error("Error parsing resource at " + response.url + ".");
                 }
                 return [3 /*break*/, 3];
-            case 2: return [2 /*return*/, _fetcher(path, local)];
+            case 2: return [2 /*return*/, _fetcher(path, remote)];
             case 3: return [2 /*return*/];
         }
     });
