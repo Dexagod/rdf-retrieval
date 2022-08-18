@@ -108,7 +108,7 @@ const isRemote = (path: string) => {
 
 var _fetcher = async(path: string, remote: boolean) => {
   if (isBrowser && !remote) throw new Error("Cannot retrieve local files from browser environment.")
-  const { quads } = await rdfDereferencer.dereference(path, {localFiles: !remote})
+  const { data: quads } = await rdfDereferencer.dereference(path, {localFiles: !remote})
   return quads
 }
 
