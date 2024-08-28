@@ -1,21 +1,21 @@
-import { isBrowser } from 'browser-or-node';
 import * as RDF from 'rdf-js';
 import * as N3 from "n3";
 import factory from "rdf-ext";
-import rdfDereferencer from "rdf-dereference";
 import rdfSerializer from "rdf-serialize";
 import rdfParser from "rdf-parse";
+import { readFileSync } from "fs"
 
 const stringifyStream = require('stream-to-string');
 const streamifyArray = require('streamify-array');
+const streamifyString = require('streamify-string')
 
 // Data retrieval functions
 export const getResourceAsQuadStream = async (path: string) => {
-  return await fetch(path, isRemote(path))
+  return await getResourceStream(path, isRemote(path))
 }
 
 export const getResourceAsQuadArray = async (path: string) => {
-  const stream = await fetch(path, isRemote(path))
+  const stream = await getResourceStream(path, isRemote(path))
   return await quadStreamToQuadArray(stream)
 }
 
@@ -106,35 +106,16 @@ const isRemote = (path: string) => {
 }
 
 
-var _fetcher = async(path: string, remote: boolean) => {
-  if (isBrowser && !remote) throw new Error("Cannot retrieve local files from browser environment.")
-  const { data: quads } = await rdfDereferencer.dereference(path, {localFiles: !remote})
-  return quads
-}
-
-var _customfetcher: any;
-
-const fetch = async(path: string, remote: boolean) => {
-  if (_customfetcher) { 
-    // Only for custom fetch functions in the browser
-    const response = await _customfetcher(path);
-    const content_type = response.headers.get('content-type')
-    try {
-      const inputStream = toReadableStream(response.body)
-      return rdfParser.parse(inputStream, { contentType: content_type })
-    } catch(e) {
-      throw new Error(`Error parsing resource at ${response.url}.`)
-    }
+const getResourceStream = async(path: string, remote: boolean) => {
+  if (remote) {
+    const res = await fetch(path);
+    return rdfParser.parse(toReadableStream(res.body), { contentType: res.headers.get('content-type') || 'text/turtle' })
+  } else {
+    // This will ony work for node, not in the browser
+    const res = await readFileSync(path)
+    return rdfParser.parse(streamifyString(res), { path })
   }
-  else return _fetcher(path, remote);
 }
-
-
-export const setFetchFunction = async(f: Function) => {
-  _customfetcher = f
-}
-
-
 
 /**
  * Converts a WhatWG streams to Node streams if required.

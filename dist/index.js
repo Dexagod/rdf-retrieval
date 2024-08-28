@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -14,7 +18,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -33,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -58,96 +62,103 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toReadableStream = exports.setFetchFunction = exports.quadArrayToString = exports.quadStreamToString = exports.quadArrayToTextStream = exports.quadStreamToTextStream = exports.quadArrayToDataset = exports.quadStreamToDataset = exports.quadArrayToStore = exports.quadStreamToStore = exports.quadArrayToQuadStream = exports.quadStreamToQuadArray = exports.getResourceAsString = exports.getResourceAsTextStream = exports.getResourceAsStore = exports.getResourceAsDataset = exports.getResourceAsQuadArray = exports.getResourceAsQuadStream = void 0;
-var browser_or_node_1 = require("browser-or-node");
+exports.toReadableStream = exports.quadArrayToString = exports.quadStreamToString = exports.quadArrayToTextStream = exports.quadStreamToTextStream = exports.quadArrayToDataset = exports.quadStreamToDataset = exports.quadArrayToStore = exports.quadStreamToStore = exports.quadArrayToQuadStream = exports.quadStreamToQuadArray = exports.getResourceAsString = exports.getResourceAsTextStream = exports.getResourceAsStore = exports.getResourceAsDataset = exports.getResourceAsQuadArray = exports.getResourceAsQuadStream = void 0;
 var N3 = __importStar(require("n3"));
 var rdf_ext_1 = __importDefault(require("rdf-ext"));
-var rdf_dereference_1 = __importDefault(require("rdf-dereference"));
 var rdf_serialize_1 = __importDefault(require("rdf-serialize"));
 var rdf_parse_1 = __importDefault(require("rdf-parse"));
+var fs_1 = require("fs");
 var stringifyStream = require('stream-to-string');
 var streamifyArray = require('streamify-array');
+var streamifyString = require('streamify-string');
 // Data retrieval functions
-exports.getResourceAsQuadStream = function (path) { return __awaiter(void 0, void 0, void 0, function () {
+var getResourceAsQuadStream = function (path) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, fetch(path, isRemote(path))];
+            case 0: return [4 /*yield*/, getResourceStream(path, isRemote(path))];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.getResourceAsQuadArray = function (path) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getResourceAsQuadStream = getResourceAsQuadStream;
+var getResourceAsQuadArray = function (path) { return __awaiter(void 0, void 0, void 0, function () {
     var stream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, fetch(path, isRemote(path))];
+            case 0: return [4 /*yield*/, getResourceStream(path, isRemote(path))];
             case 1:
                 stream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamToQuadArray(stream)];
+                return [4 /*yield*/, (0, exports.quadStreamToQuadArray)(stream)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.getResourceAsDataset = function (path) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getResourceAsQuadArray = getResourceAsQuadArray;
+var getResourceAsDataset = function (path) { return __awaiter(void 0, void 0, void 0, function () {
     var quadStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
+            case 0: return [4 /*yield*/, (0, exports.getResourceAsQuadStream)(path)];
             case 1:
                 quadStream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamToDataset(quadStream)];
+                return [4 /*yield*/, (0, exports.quadStreamToDataset)(quadStream)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.getResourceAsStore = function (path) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getResourceAsDataset = getResourceAsDataset;
+var getResourceAsStore = function (path) { return __awaiter(void 0, void 0, void 0, function () {
     var quadArray;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getResourceAsQuadArray(path)];
+            case 0: return [4 /*yield*/, (0, exports.getResourceAsQuadArray)(path)];
             case 1:
                 quadArray = _a.sent();
                 return [2 /*return*/, new N3.Store(quadArray)];
         }
     });
 }); };
-exports.getResourceAsTextStream = function (path, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getResourceAsStore = getResourceAsStore;
+var getResourceAsTextStream = function (path, format) { return __awaiter(void 0, void 0, void 0, function () {
     var quadStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
+            case 0: return [4 /*yield*/, (0, exports.getResourceAsQuadStream)(path)];
             case 1:
                 quadStream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamToTextStream(quadStream, format)];
+                return [4 /*yield*/, (0, exports.quadStreamToTextStream)(quadStream, format)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.getResourceAsString = function (path, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getResourceAsTextStream = getResourceAsTextStream;
+var getResourceAsString = function (path, format) { return __awaiter(void 0, void 0, void 0, function () {
     var quadStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getResourceAsQuadStream(path)];
+            case 0: return [4 /*yield*/, (0, exports.getResourceAsQuadStream)(path)];
             case 1:
                 quadStream = _a.sent();
-                return [4 /*yield*/, exports.quadStreamToString(quadStream, format)];
+                return [4 /*yield*/, (0, exports.quadStreamToString)(quadStream, format)];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
+exports.getResourceAsString = getResourceAsString;
 // Data conversion functions
-exports.quadStreamToQuadArray = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+var quadStreamToQuadArray = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 var quads = [];
                 input
                     .on('data', function (quad) { quads.push(quad); })
-                    .on('error', function (error) { return reject(new Error("Error parsing notification body.\n" + error.message)); })
+                    .on('error', function (error) { return reject(new Error("Error parsing notification body.\n".concat(error.message))); })
                     .on('end', function () { return resolve(quads); });
             })];
     });
 }); };
-exports.quadArrayToQuadStream = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToQuadArray = quadStreamToQuadArray;
+var quadArrayToQuadStream = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, streamifyArray(input)];
@@ -155,23 +166,26 @@ exports.quadArrayToQuadStream = function (input) { return __awaiter(void 0, void
         }
     });
 }); };
-exports.quadStreamToStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToQuadStream = quadArrayToQuadStream;
+var quadStreamToStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 _b = (_a = N3.Store).bind;
-                return [4 /*yield*/, exports.quadStreamToQuadArray(input)];
+                return [4 /*yield*/, (0, exports.quadStreamToQuadArray)(input)];
             case 1: return [2 /*return*/, new (_b.apply(_a, [void 0, _c.sent()]))()];
         }
     });
 }); };
-exports.quadArrayToStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToStore = quadStreamToStore;
+var quadArrayToStore = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new N3.Store(input)];
     });
 }); };
-exports.quadStreamToDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToStore = quadArrayToStore;
+var quadStreamToDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, rdf_ext_1.default.dataset().import(input)];
@@ -179,11 +193,12 @@ exports.quadStreamToDataset = function (input) { return __awaiter(void 0, void 0
         }
     });
 }); };
-exports.quadArrayToDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToDataset = quadStreamToDataset;
+var quadArrayToDataset = function (input) { return __awaiter(void 0, void 0, void 0, function () {
     var quadStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.quadArrayToQuadStream(input)];
+            case 0: return [4 /*yield*/, (0, exports.quadArrayToQuadStream)(input)];
             case 1:
                 quadStream = _a.sent();
                 return [4 /*yield*/, rdf_ext_1.default.dataset().import(quadStream)];
@@ -191,30 +206,33 @@ exports.quadArrayToDataset = function (input) { return __awaiter(void 0, void 0,
         }
     });
 }); };
-exports.quadStreamToTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToDataset = quadArrayToDataset;
+var quadStreamToTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         format = format || "text/turtle";
         return [2 /*return*/, rdf_serialize_1.default.serialize(input, { contentType: format })];
     });
 }); };
-exports.quadArrayToTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToTextStream = quadStreamToTextStream;
+var quadArrayToTextStream = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     var quadStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 format = format || "text/turtle";
-                return [4 /*yield*/, exports.quadArrayToQuadStream(input)];
+                return [4 /*yield*/, (0, exports.quadArrayToQuadStream)(input)];
             case 1:
                 quadStream = _a.sent();
                 return [2 /*return*/, rdf_serialize_1.default.serialize(quadStream, { contentType: format })];
         }
     });
 }); };
-exports.quadStreamToString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadArrayToTextStream = quadArrayToTextStream;
+var quadStreamToString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     var textStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.quadStreamToTextStream(input, format)];
+            case 0: return [4 /*yield*/, (0, exports.quadStreamToTextStream)(input, format)];
             case 1:
                 textStream = _a.sent();
                 return [4 /*yield*/, stringifyStream(textStream)];
@@ -222,11 +240,12 @@ exports.quadStreamToString = function (input, format) { return __awaiter(void 0,
         }
     });
 }); };
-exports.quadArrayToString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
+exports.quadStreamToString = quadStreamToString;
+var quadArrayToString = function (input, format) { return __awaiter(void 0, void 0, void 0, function () {
     var textStream;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.quadArrayToTextStream(input, format)];
+            case 0: return [4 /*yield*/, (0, exports.quadArrayToTextStream)(input, format)];
             case 1:
                 textStream = _a.sent();
                 return [4 /*yield*/, stringifyStream(textStream)];
@@ -234,6 +253,7 @@ exports.quadArrayToString = function (input, format) { return __awaiter(void 0, 
         }
     });
 }); };
+exports.quadArrayToString = quadArrayToString;
 var isRemote = function (path) {
     var remoteURL = true;
     try {
@@ -244,48 +264,21 @@ var isRemote = function (path) {
     }
     return remoteURL;
 };
-var _fetcher = function (path, remote) { return __awaiter(void 0, void 0, void 0, function () {
-    var quads;
+var getResourceStream = function (path, remote) { return __awaiter(void 0, void 0, void 0, function () {
+    var res, res;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (browser_or_node_1.isBrowser && !remote)
-                    throw new Error("Cannot retrieve local files from browser environment.");
-                return [4 /*yield*/, rdf_dereference_1.default.dereference(path, { localFiles: !remote })];
+                if (!remote) return [3 /*break*/, 2];
+                return [4 /*yield*/, fetch(path)];
             case 1:
-                quads = (_a.sent()).quads;
-                return [2 /*return*/, quads];
+                res = _a.sent();
+                return [2 /*return*/, rdf_parse_1.default.parse(toReadableStream(res.body), { contentType: res.headers.get('content-type') || 'text/turtle' })];
+            case 2: return [4 /*yield*/, (0, fs_1.readFileSync)(path)];
+            case 3:
+                res = _a.sent();
+                return [2 /*return*/, rdf_parse_1.default.parse(streamifyString(res), { path: path })];
         }
-    });
-}); };
-var _customfetcher;
-var fetch = function (path, remote) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, content_type, inputStream;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                if (!_customfetcher) return [3 /*break*/, 2];
-                return [4 /*yield*/, _customfetcher(path)];
-            case 1:
-                response = _a.sent();
-                content_type = response.headers.get('content-type');
-                try {
-                    inputStream = toReadableStream(response.body);
-                    return [2 /*return*/, rdf_parse_1.default.parse(inputStream, { contentType: content_type })];
-                }
-                catch (e) {
-                    throw new Error("Error parsing resource at " + response.url + ".");
-                }
-                return [3 /*break*/, 3];
-            case 2: return [2 /*return*/, _fetcher(path, remote)];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); };
-exports.setFetchFunction = function (f) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        _customfetcher = f;
-        return [2 /*return*/];
     });
 }); };
 /**
