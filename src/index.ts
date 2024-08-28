@@ -46,7 +46,7 @@ export const quadStreamToQuadArray = async (input: RDF.Stream) : Promise<RDF.Qua
     const quads : RDF.Quad[] = []
     input
     .on('data', (quad) => {quads.push(quad)})
-    .on('error', (error) => reject(new Error(`Error parsing notification body.\n${error.message}`)))
+    .on('error', (error) => reject(new Error(`Error parsing RDF body.\n${error.message}`)))
     .on('end', () => resolve(quads));
   })
 }
@@ -88,12 +88,12 @@ export const quadArrayToTextStream = async (input: RDF.Quad[], format?: string) 
 
 export const quadStreamToString = async (input: RDF.Stream, format?: string) => {
   const textStream = await quadStreamToTextStream(input, format)
-  return await stringifyStream(textStream) as String
+  return (await stringifyStream(textStream)).replace(/^\s*[\r\n]/gm, "") as String
 }
 
 export const quadArrayToString = async (input: RDF.Quad[], format?: string) => {
   const textStream = await quadArrayToTextStream(input, format)
-  return await stringifyStream(textStream) as String
+  return (await stringifyStream(textStream)).replace(/^\s*[\r\n]/gm, "") as String
 }
 
 
@@ -109,7 +109,11 @@ const isRemote = (path: string) => {
 const getResourceStream = async(path: string, remote: boolean) => {
   if (remote) {
     const res = await fetch(path);
-    return rdfParser.parse(toReadableStream(res.body), { contentType: res.headers.get('content-type') || 'text/turtle' })
+    const contentTypeHeader = res.headers.get('content-type') || "text/turtle"
+    const breakpoint = /;\s*charset=/
+    const contentType = contentTypeHeader?.split(breakpoint)[0]
+    const charset = contentTypeHeader?.split(breakpoint)[1]
+    return rdfParser.parse(toReadableStream(res.body), { contentType })
   } else {
     // This will ony work for node, not in the browser
     const res = await readFileSync(path)
